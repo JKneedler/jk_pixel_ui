@@ -6,7 +6,8 @@ import '../jk_asset.dart';
 
 enum QvInsetBackgroundType {
   surface,
-  secondary;
+  secondary,
+  surfaceContainer;
 
   String assetPath(String themeId) {
     switch (this) {
@@ -14,6 +15,8 @@ enum QvInsetBackgroundType {
         return 'images/ui/backgrounds/$themeId/background-surface.png';
       case QvInsetBackgroundType.secondary:
         return 'images/ui/backgrounds/$themeId/background-secondary.png';
+      case QvInsetBackgroundType.surfaceContainer:
+        return 'images/ui/backgrounds/$themeId/background-surface-container.png';
     }
   }
 }
