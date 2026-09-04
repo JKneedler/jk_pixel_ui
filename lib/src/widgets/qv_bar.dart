@@ -7,36 +7,6 @@ import '../constants.dart';
 import '../jk_asset.dart';
 import 'qv_inset_background.dart';
 
-// Bordered 9-slice geometry for the fraction-fill bar image AND its inset
-// background — both are sized/sliced to match (background-<type>-<suffix>.png
-// counterparts the bar-<resource>-<suffix>.png assets), unlike
-// QvInsetBackground's own fixed STANDARD_BORDER_SLICE/MIN_SIZE which is too
-// large for a compact bar. See the *_SLICE and *_MIN_SIZE constants in
-// constants.dart for why each variant needs its own min size (tied to that
-// asset's own border inset).
-enum QvBarSize {
-  small(
-    assetSuffix: 'small',
-    slice: SMALL_BAR_SLICE,
-    minSize: SMALL_BAR_MIN_SIZE,
-  ),
-  mini(
-    assetSuffix: 'mini',
-    slice: MINI_BAR_SLICE,
-    minSize: MINI_BAR_MIN_SIZE,
-  );
-
-  final String assetSuffix;
-  final Rect slice;
-  final Size minSize;
-
-  const QvBarSize({
-    required this.assetSuffix,
-    required this.slice,
-    required this.minSize,
-  });
-}
-
 // Which resource's baked-color bar asset to use — an open, const-
 // constructible class (not a closed enum) so a consuming app can register
 // its own resource/color without forking this widget; images/ui/bars/

@@ -157,3 +157,32 @@ const SMALL_BAR_MIN_SIZE = Size(20, 20);
 
 const MINI_BAR_SLICE = Rect.fromLTWH(6, 6, 52, 52);
 const MINI_BAR_MIN_SIZE = Size(22, 22);
+
+// Smaller-than-standard 9-slice geometry, shared by QvBar (both its fill
+// bar image and its inset background) and QvInsetBackground's own optional
+// `size` — anything using a background-<type>-<suffix>.png asset family
+// instead of the bare background-<type>.png one. Lives here (not on either
+// widget) so both can reference the same small/mini definitions without
+// one importing the other.
+enum QvBarSize {
+  small(
+    assetSuffix: 'small',
+    slice: SMALL_BAR_SLICE,
+    minSize: SMALL_BAR_MIN_SIZE,
+  ),
+  mini(
+    assetSuffix: 'mini',
+    slice: MINI_BAR_SLICE,
+    minSize: MINI_BAR_MIN_SIZE,
+  );
+
+  final String assetSuffix;
+  final Rect slice;
+  final Size minSize;
+
+  const QvBarSize({
+    required this.assetSuffix,
+    required this.slice,
+    required this.minSize,
+  });
+}

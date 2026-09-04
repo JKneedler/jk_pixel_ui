@@ -9,14 +9,20 @@ enum QvInsetBackgroundType {
   secondary,
   surfaceContainer;
 
-  String assetPath(String themeId) {
+  // barSize is null for the standard (STANDARD_BORDER_SLICE/MIN_SIZE)
+  // background-<type>.png asset; QvInsetBackground's own optional `size`
+  // passes a QvBarSize to instead reach for the smaller-bordered
+  // background-<type>-<suffix>.png sibling QvBar's bars already use (see
+  // QvBarSize's own doc comment in constants.dart).
+  String assetPath(String themeId, {QvBarSize? barSize}) {
+    final suffix = barSize == null ? '' : '-${barSize.assetSuffix}';
     switch (this) {
       case QvInsetBackgroundType.surface:
-        return 'images/ui/backgrounds/$themeId/background-surface.png';
+        return 'images/ui/backgrounds/$themeId/background-surface$suffix.png';
       case QvInsetBackgroundType.secondary:
-        return 'images/ui/backgrounds/$themeId/background-secondary.png';
+        return 'images/ui/backgrounds/$themeId/background-secondary$suffix.png';
       case QvInsetBackgroundType.surfaceContainer:
-        return 'images/ui/backgrounds/$themeId/background-surface-container.png';
+        return 'images/ui/backgrounds/$themeId/background-surface-container$suffix.png';
     }
   }
 }
@@ -28,6 +34,13 @@ class QvInsetBackground extends StatelessWidget {
   final double? height;
   final QvInsetBackgroundType type;
   final bool enabled;
+  // Opts into a smaller 9-slice border than the standard 36px-minimum one
+  // (down to QvBarSize.small's 20px) — for a compact box (e.g. a stat
+  // pill) where the standard border reads oversized relative to its
+  // content. Needs a background-<type>-<suffix>.png asset to exist for
+  // this type; not every QvInsetBackgroundType has small/mini variants
+  // generated yet.
+  final QvBarSize? size;
   const QvInsetBackground({
     super.key,
     required this.child,
@@ -36,15 +49,18 @@ class QvInsetBackground extends StatelessWidget {
     this.height,
     this.type = QvInsetBackgroundType.secondary,
     this.enabled = true,
+    this.size,
   });
 
   @override
   Widget build(BuildContext context) {
     final themeId = context.watch<ThemeCubit>().state.theme.id;
+    final slice = size?.slice ?? STANDARD_BORDER_SLICE;
+    final minSize = size?.minSize ?? STANDARD_BORDER_MIN_SIZE;
     return ConstrainedBox(
       constraints: BoxConstraints(
-        minWidth: STANDARD_BORDER_MIN_SIZE.width,
-        minHeight: STANDARD_BORDER_MIN_SIZE.height,
+        minWidth: minSize.width,
+        minHeight: minSize.height,
       ),
       child: Container(
         padding: padding,
@@ -53,8 +69,8 @@ class QvInsetBackground extends StatelessWidget {
         decoration: enabled
             ? BoxDecoration(
                 image: DecorationImage(
-                  image: jkAsset(type.assetPath(themeId)),
-                  centerSlice: STANDARD_BORDER_SLICE,
+                  image: jkAsset(type.assetPath(themeId, barSize: size)),
+                  centerSlice: slice,
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.none,
                 ),
